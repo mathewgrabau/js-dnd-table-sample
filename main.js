@@ -9,8 +9,32 @@ function addEventDescription(name, details) {
   }
 }
 
+function getParentRowElement(dragHandle) {
+  let p = dragHandle.parentElement;
+  if (p.tagName == "TD") {
+    return getParentRowElement(p);
+  } else if (p.tagName == "TR") {
+    return p;
+  } else {
+    // Do something with an unknown element.
+    return null;
+  }
+}
+
 function dragHandle_OnDragStart(ev) {
   addEventDescription(ev.target.id, "ondragstart");
+  let parentRow = getParentRowElement(ev.target);
+  if (parentRow !== undefined && parentRow !== null) {
+    let rowId = parentRow.dataset.rowId;
+    // Add the data
+    if (rowId !== undefined && rowId !== null) {
+      ev.dataTransfer.setData("text/plain", "" + rowId);
+      ev.dataTransfer.setData("mg-dndrow/id", rowId);
+    }
+    addEventDescription("rowId", rowId);
+  } else {
+    console.error("Invalid element dragging");
+  }
 }
 
 window.addEventListener("DOMContentLoaded", () => {
