@@ -10,5 +10,5 @@ More information about the intent of the project is available on the related blo
 
 ## Running
 
-The recommended method of running the site with with the http-server node.js package (`npm install http-server -g` if not already installed on your system) since it's nice and quick to serve the pages locally.
+A simple way to run the site is with the http-server node.js package (`npm install http-server -g` if not already installed on your system). It's a nice and quick way to serve the pages locally. 
 
