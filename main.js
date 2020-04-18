@@ -39,6 +39,15 @@ function dragHandle_OnDragStart(ev) {
   }
 }
 
+function dragHandle_OnDragEnd(ev) {
+  ev.preventDefault();
+
+  addEventDescription(
+    ev.currentTarget.id,
+    "dragend - " + ev.dataTransfer.dropEffect
+  );
+}
+
 function gridRow_OnDragOver(ev) {
   ev.preventDefault();
 
@@ -64,6 +73,7 @@ window.addEventListener("DOMContentLoaded", () => {
   const elements = document.getElementsByClassName("drag-handle");
   for (let i = 0; i < elements.length; ++i) {
     elements[i].addEventListener("dragstart", dragHandle_OnDragStart);
+    elements[i].addEventListener("dragend", dragHandle_OnDragEnd);
   }
 
   const tableRows = document.getElementsByTagName("tr");
