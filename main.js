@@ -30,11 +30,30 @@ function dragHandle_OnDragStart(ev) {
     if (rowId !== undefined && rowId !== null) {
       ev.dataTransfer.setData("text/plain", "" + rowId);
       ev.dataTransfer.setData("mg-dndrow/id", rowId);
+
+      ev.dataTransfer.dropEffect = "move";
     }
     addEventDescription("rowId", rowId);
   } else {
     console.error("Invalid element dragging");
   }
+}
+
+function gridRow_OnDragOver(ev) {
+  ev.preventDefault();
+
+  ev.dataTransfer.dropEffect = "move";
+
+  addEventDescription(ev.currentTarget.tagName, "ondropover");
+}
+
+function gridRow_OnDrop(ev) {
+  ev.preventDefault();
+
+  // Need the data now
+  const receivedData = ev.dataTransfer.getData("mg-dndrow/id");
+
+  addEventDescription(ev.currentTarget.tagName, "ondrop");
 }
 
 window.addEventListener("DOMContentLoaded", () => {
@@ -45,5 +64,13 @@ window.addEventListener("DOMContentLoaded", () => {
   const elements = document.getElementsByClassName("drag-handle");
   for (let i = 0; i < elements.length; ++i) {
     elements[i].addEventListener("dragstart", dragHandle_OnDragStart);
+  }
+
+  const tableRows = document.getElementsByTagName("tr");
+  for (let i = 0; i < tableRows.length; ++i) {
+    if (tableRows[i].dataset.rowId) {
+      tableRows[i].addEventListener("dragover", gridRow_OnDragOver);
+      tableRows[i].addEventListener("drop", gridRow_OnDrop);
+    }
   }
 });
