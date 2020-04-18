@@ -46,6 +46,12 @@ function dragHandle_OnDragEnd(ev) {
     ev.currentTarget.id,
     "dragend - " + ev.dataTransfer.dropEffect
   );
+
+  if (ev.dataTransfer.dropEffect == "move") {
+    let parentRow = getParentRowElement(ev.target);
+    if (parentRow !== undefined && parentRow !== null) {
+    }
+  }
 }
 
 function gridRow_OnDragOver(ev) {
@@ -62,7 +68,59 @@ function gridRow_OnDrop(ev) {
   // Need the data now
   const receivedData = ev.dataTransfer.getData("mg-dndrow/id");
 
-  addEventDescription(ev.currentTarget.tagName, "ondrop");
+  let dropRow = getParentRowElement(ev.target);
+  addEventDescription(
+    ev.currentTarget.tagName,
+    "ondrop " + dropRow.dataset.rowId + ", new row is " + receivedData
+  );
+
+  // Grabbing the table element itself.
+  const tableElement = document.getElementById("dragTable");
+
+  let rowToMove = null;
+  let dropIndex = -1;
+  let removeIndex = -1;
+
+  if (tableElement !== undefined && tableElement !== null) {
+    for (let i = 0; i < tableElement.rows.length; ++i) {
+      if (tableElement.rows[i].dataset.rowId === receivedData) {
+        rowToMove = tableElement.rows[i];
+        removeIndex = i;
+      }
+
+      if (tableElement.rows[i] === dropRow) {
+        dropIndex = i;
+      }
+
+      // Can terminate now
+      if (rowToMove !== null && dropIndex >= 0) {
+        break;
+      }
+    }
+  }
+
+  if (rowToMove && dropRow && dropIndex >= 0) {
+    let p = rowToMove.parentNode;
+
+    // Moving it ahead in the table, that's a special case because of the insertBefore API
+    if (removeIndex < dropIndex) {
+      // Either the last element, or handle the proper needs.
+      // The last row is a special case.
+      if (dropIndex === tableElement.rows.length - 1) {
+        // No more rows to drop at, we're done, so put it into the end of the table and continue.
+        rowToMove.parentNode.removeChild(rowToMove);
+        p.appendChild(rowToMove);
+        return;
+      } else {
+        // Grab the row after it to
+        dropRow = tableElement.rows[dropIndex + 1];
+      }
+    }
+
+    // Removing the original one from there.
+    rowToMove.parentNode.removeChild(rowToMove);
+    p.insertBefore(rowToMove, dropRow);
+  }
 }
 
 window.addEventListener("DOMContentLoaded", () => {
