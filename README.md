@@ -6,7 +6,7 @@ Last Updated: 12 April 2020
 
 Demonstration of using the HTML native drag and drop API capabilities to implement a table (grid) that allows supports drag and drop reordering.
 
-More information about the intent of the project is available on the related blog post: 
+More information about the intent of the project is available on the related blog post: https://blog.mathewgrabau.ca/javascript-drag-drop-starter
 
 ## Running
 
